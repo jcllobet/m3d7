@@ -1,6 +1,6 @@
 //import fetch from "node-fetch";
 
-const userArray = [];
+let userArray = [];
 
 const STATE = {
     displayName: true,
@@ -26,6 +26,7 @@ const fetchUsers = async () => {
 const renderUsers = (userArray) => {
     // target the right div
     const row = document.querySelector(".container .row");
+    row.innerHTML = "";
     console.log(row);
 
     userArray.forEach((user) => {
@@ -39,7 +40,7 @@ const renderUsers = (userArray) => {
         const col = document.createElement("div");
         col.className = "my-3 mx-3 col-md-3";
         const card = document.createElement("div");
-        card.innerHTML = "";
+
         card.className = "card";
         console.log(STATE);
         if (STATE.displayName && STATE.displayUsername && STATE.displayEmail) {
@@ -68,7 +69,7 @@ const renderUsers = (userArray) => {
 };
 
 const addDropdown = async (userArray) => {
-    const row = document.querySelector(".container .row");
+    const row = document.querySelector(".container .row2");
     const dropdown = document.createElement("div");
     dropdown.className = "col-5 my-3 mx-3";
     dropdown.innerHTML = `
@@ -123,6 +124,8 @@ const handleDropdownFilter = (event) => {
         console.log("filtering by name");
         STATE.displayUsername = false;
         STATE.displayEmail = false;
+        console.log("STATE", STATE);
+        console.log("GLOBAL", userArray);
         renderUsers(userArray);
     } else {
         console.log("something is not working");
@@ -166,13 +169,13 @@ const userAddress = (userNameArr, userArray) => {
         tempString += `(${user.address.zipcode})`;
         obj.addressString = tempString;
         userAddressArr = [...userAddressArr, obj];
-        //addressArr = [...addressArr, addressString];
     });
     return userAddressArr;
 };
 
 window.onload = async () => {
-    const userArray = await fetchUsers();
+    const data = await fetchUsers();
+    userArray = [...data];
     // to be used in UserDetailPage
     //const { id, name, username, email, address, phone, website } = userArray;
 
