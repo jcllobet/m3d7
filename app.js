@@ -2,9 +2,11 @@
 
 const userArray = [];
 
-const displayName = true;
-const displayUsername = true;
-const displayEmail = true;
+const state = {
+    displayName: true,
+    displayUsername: true,
+    displayEmail: true,
+};
 
 // Async Function to Fetch users using await
 
@@ -21,7 +23,7 @@ const fetchUsers = async () => {
 
 // Display users onload
 
-const renderUsers = (userArray) => {
+const renderUsers = (userArray, state) => {
     // target the right div
     const row = document.querySelector(".container .row");
     console.log(row);
@@ -37,7 +39,8 @@ const renderUsers = (userArray) => {
         col.className = "my-3 mx-3 col-md-3";
         const card = document.createElement("div");
         card.className = "card";
-        if (displayName && displayUsername && displayEmail) {
+        if (state.displayName && state.displayUsername && state.displayEmail) {
+            console.log("all is true");
             card.innerHTML = `
                 <div class="card-body">
                     <h5 class="card-title">${user.name}</h5>
@@ -47,6 +50,7 @@ const renderUsers = (userArray) => {
                 </div>
                 `;
         } else {
+            console.log("only showing name");
             card.innerHTML = `
                 <div class="card-body">
                     <h5 class="card-title">${user.name}</h5>
@@ -97,25 +101,25 @@ const addDropdown = async (userArray) => {
     // If dropdown == NAME , display only user names
 };
 
-const addDropdownListeners = async () => {
-    console.log("listeners initated");
-    const dropItemArray = document.querySelectorAll("dropdown-item");
+const addDropdownListeners = () => {
+    const dropItemArray = document.querySelectorAll(".dropdown-item");
+    console.log(dropItemArray);
     if (dropItemArray.lenght !== 0) {
         dropItemArray.forEach((option) => {
             option.addEventListener("click", handleDropdownFilter);
         });
+        console.log("listeners initated");
     } else {
         console.log("item array is empty");
     }
 };
 
 const handleDropdownFilter = (event) => {
-    console.log("HELLLO");
-    if (event.target.innerHTML == "Name") {
-        console.log("filter this");
-        displayUsername = false;
-        displayEmail = false;
-        renderUsers(userArray);
+    if (event.target.innerHTML.toLowerCase() == "name") {
+        console.log("filtering by name");
+        state.displayUsername = false;
+        state.displayEmail = false;
+        renderUsers(userArray, state);
     }
 };
 
@@ -128,7 +132,7 @@ window.onload = async () => {
     console.log("Logging user array", userArray);
     renderUsers(userArray);
     addDropdown(userArray);
-    addDropdownListeners();
+    addDropdownListeners(userArray);
 };
 
 // Add listener to user input text
