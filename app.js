@@ -2,7 +2,7 @@
 
 const userArray = [];
 
-const state = {
+const STATE = {
     displayName: true,
     displayUsername: true,
     displayEmail: true,
@@ -23,7 +23,7 @@ const fetchUsers = async () => {
 
 // Display users onload
 
-const renderUsers = (userArray, state) => {
+const renderUsers = (userArray) => {
     // target the right div
     const row = document.querySelector(".container .row");
     console.log(row);
@@ -39,7 +39,8 @@ const renderUsers = (userArray, state) => {
         col.className = "my-3 mx-3 col-md-3";
         const card = document.createElement("div");
         card.className = "card";
-        if (state.displayName && state.displayUsername && state.displayEmail) {
+        console.log(STATE);
+        if (STATE.displayName && STATE.displayUsername && STATE.displayEmail) {
             console.log("all is true");
             card.innerHTML = `
                 <div class="card-body">
@@ -115,11 +116,14 @@ const addDropdownListeners = () => {
 };
 
 const handleDropdownFilter = (event) => {
+    console.log(event.target.innerHTML);
     if (event.target.innerHTML.toLowerCase() == "name") {
         console.log("filtering by name");
-        state.displayUsername = false;
-        state.displayEmail = false;
-        renderUsers(userArray, state);
+        STATE.displayUsername = false;
+        STATE.displayEmail = false;
+        renderUsers(userArray);
+    } else {
+        console.log("something is not working");
     }
 };
 
