@@ -34,15 +34,17 @@ const renderUsers = (userArray) => {
         // add classes
         // add inner html
         // appendChild to parent
+
         console.log(user);
         const col = document.createElement("div");
         col.className = "my-3 mx-3 col-md-3";
         const card = document.createElement("div");
+        card.innerHTML = "";
         card.className = "card";
         console.log(STATE);
         if (STATE.displayName && STATE.displayUsername && STATE.displayEmail) {
             console.log("all is true");
-            card.innerHTML = `
+            card.innerHTML += `
                 <div class="card-body">
                     <h5 class="card-title">${user.name}</h5>
                     <p class="card-text">${user.username}</p>
@@ -52,7 +54,7 @@ const renderUsers = (userArray) => {
                 `;
         } else {
             console.log("only showing name");
-            card.innerHTML = `
+            card.innerHTML += `
                 <div class="card-body">
                     <h5 class="card-title">${user.name}</h5>
                     <a href="/detail.html" event= class="btn btn-primary"> Render ${user.id}</a>
@@ -127,22 +129,15 @@ const handleDropdownFilter = (event) => {
     }
 };
 
-window.onload = async () => {
-    const userArray = await fetchUsers();
-    // to be used in UserDetailPage
-    //const { id, name, username, email, address, phone, website } = userArray;
-
-    localStorage.setItem("userArray", JSON.stringify(userArray));
-    console.log("Logging user array", userArray);
-    renderUsers(userArray);
-    addDropdown(userArray);
-    addDropdownListeners(userArray);
-};
-
-// Add listener to user input text
-// Filter input = Glenna
-
 // Ex3) Create a function that, from the list of users, extracts only the names
+
+const userNames = (userArray) => {
+    let userNameArr = [];
+    userArray.forEach((user) => {
+        userNameArr = [...userNameArr, user.name];
+    });
+    return userNameArr;
+};
 
 // Ex4) Create a function that, from the list of users, creates an array of addresses as string and not as an object. Like:
 //         {
@@ -155,6 +150,45 @@ window.onload = async () => {
 //           "lng": "-34.4618"
 //         }
 //     Should become Victor Plains, Suite 879, Wisokyburgh (90566-7771)
+
+const userAddress = (userNameArr, userArray) => {
+    let userAddressArr = [];
+    let addressArr = [];
+    userArray.forEach((user) => {
+        let obj = {
+            name: user.name,
+            addressString: "",
+        };
+        let tempString = "";
+        tempString += user.address.street + ", ";
+        tempString += user.address.suite + ", ";
+        tempString += user.address.city + ", ";
+        tempString += `(${user.address.zipcode})`;
+        obj.addressString = tempString;
+        userAddressArr = [...userAddressArr, obj];
+        //addressArr = [...addressArr, addressString];
+    });
+    return userAddressArr;
+};
+
+window.onload = async () => {
+    const userArray = await fetchUsers();
+    // to be used in UserDetailPage
+    //const { id, name, username, email, address, phone, website } = userArray;
+
+    localStorage.setItem("userArray", JSON.stringify(userArray));
+    console.log("Logging user array", userArray);
+    renderUsers(userArray);
+    addDropdown(userArray);
+    addDropdownListeners(userArray);
+    userNames(userArray);
+    console.log(userNames(userArray));
+    userAddress(userNames(userArray), userArray);
+    console.log(userAddress(userNames(userArray), userArray));
+};
+
+// Add listener to user input text
+// Filter input = Glenna
 
 // Ex5) Add a button that sorts the list by name ascending / descending (ONE button)
 
