@@ -1,6 +1,11 @@
 //import fetch from "node-fetch";
 
 const userArray = [];
+
+const displayName = true;
+const displayUsername = true;
+const displayEmail = true;
+
 // Async Function to Fetch users using await
 
 const fetchUsers = async () => {
@@ -22,39 +27,109 @@ const renderUsers = (userArray) => {
     console.log(row);
 
     userArray.forEach((user) => {
+        // for each user in array
+        // create element
+        // add classes
+        // add inner html
+        // appendChild to parent
         console.log(user);
         const col = document.createElement("div");
         col.className = "my-3 mx-3 col-md-3";
         const card = document.createElement("div");
         card.className = "card";
-        card.innerHTML += `
-                <img class="card-img-top" src="..." alt="Card image cap">
+        if (displayName && displayUsername && displayEmail) {
+            card.innerHTML = `
                 <div class="card-body">
-                    <h5 class="card-title">name</h5>
-                    <p class="card-text">username</p>
-                    <p class="card-text">email</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">${user.name}</h5>
+                    <p class="card-text">${user.username}</p>
+                    <p class="card-text">${user.email}</p>
+                    <a href="/detail.html" event= class="btn btn-primary"> Render ${user.id}</a>
                 </div>
-        `;
+                `;
+        } else {
+            card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${user.name}</h5>
+                    <a href="/detail.html" event= class="btn btn-primary"> Render ${user.id}</a>
+                </div>
+                `;
+        }
+
         col.appendChild(card);
         row.appendChild(col);
     });
-    // for each user in array
-    // create element
-    // add classes
-    // add inner html
-    // appendChild to parent
+};
+
+const addDropdown = async (userArray) => {
+    const row = document.querySelector(".container .row");
+    const dropdown = document.createElement("div");
+    dropdown.className = "col-5 my-3 mx-3";
+    dropdown.innerHTML = `
+    <div class="dropdown show">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter By
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">Name</a>
+            <a class="dropdown-item" href="#">Username</a>
+            <a class="dropdown-item" href="#">Email</a>
+        </div>
+    </div>
+    `;
+    const search = document.createElement("div");
+    search.className = "col-5 my-3 mx-3";
+    search.innerHTML = `    
+        <div class="input-group">
+            <div class="form-outline">
+            <input type="search" id="form1" class="form-control" />
+            <label class="form-label" for="form1">Search</label>
+            </div>
+            <button type="button" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+            </button>
+        </div>
+    `;
+    row.prepend(search);
+    row.prepend(dropdown);
+
+    // Create a drowpdown element and append it
+    // If dropdown == NAME , display only user names
+};
+
+const addDropdownListeners = async () => {
+    console.log("listeners initated");
+    const dropItemArray = document.querySelectorAll("dropdown-item");
+    if (dropItemArray.lenght !== 0) {
+        dropItemArray.forEach((option) => {
+            option.addEventListener("click", handleDropdownFilter);
+        });
+    } else {
+        console.log("item array is empty");
+    }
+};
+
+const handleDropdownFilter = (event) => {
+    console.log("HELLLO");
+    if (event.target.innerHTML == "Name") {
+        console.log("filter this");
+        displayUsername = false;
+        displayEmail = false;
+        renderUsers(userArray);
+    }
 };
 
 window.onload = async () => {
     const userArray = await fetchUsers();
+    // to be used in UserDetailPage
+    //const { id, name, username, email, address, phone, website } = userArray;
+
+    localStorage.setItem("userArray", JSON.stringify(userArray));
     console.log("Logging user array", userArray);
     renderUsers(userArray);
+    addDropdown(userArray);
+    addDropdownListeners();
 };
-
-// Create a drowpdown element and append it
-
-// If dropdown == NAME , display only user names
 
 // Add listener to user input text
 // Filter input = Glenna
